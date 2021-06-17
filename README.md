@@ -6,8 +6,16 @@ Original version: https://github.com/Artfunkel/BlenderSourceTools
 __Warning: This version is experimental and untested. It may corrupt your .blend files or have other nasty side effects. Please back up your files before using.__
 
 ## Usage
-1. Extract the `io_scene_valvesource` directory to `AppData\Roaming\Blender Foundation\Blender\2.83\scripts\addons\`
-2. Only DMX version Binary 9 Model 22 is supported
+1. Download latest version. 
+2. In Blender go to Edit -> Prefrences -> Add-ons
+3. Click on Install and select the downloded .zip file
+4. Tick the little box
+
+You've now installed the add on!
+
+## Issues & Pull Requests
+If you find anny issue, create a new Issue and assign me to it. If you want to add something or change the addon in any meaning, create a pull request and await my approval.
+DON'T MAKE A PULL REQUEST FOR A CHANGE IN THE README OR SIMILAR. THOSE WILL BE DECLINED IMMEDIATELY!
 
 ## Features
 * Support for vertex float maps
