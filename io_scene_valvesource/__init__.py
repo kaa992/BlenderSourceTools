@@ -20,9 +20,9 @@
 
 bl_info = {
 	"name": "Blender Source Tools",
-	"author": "Tom Edwards (translators: Grigory Revzin)",
-	"version": (3, 0, 3),
-	"blender": (2, 80, 0),
+	"author": "Tom Edwards (translators: Grigory Revzin), Sebastian 'Moonded' Danielzik (Fixing Rectus BlenderSourceTools for 2.93)",
+	"version": (3, 1, 4),
+	"blender": (2, 93, 0),
 	"category": "Import-Export",
 	"location": "File > Import/Export, Scene properties",
 	"wiki_url": "http://steamcommunity.com/groups/BlenderSourceTools",
@@ -187,7 +187,8 @@ class ValveSource_SceneProps(PropertyGroup):
 	use_kv2 : BoolProperty(name="Write KeyValues2",description="Write ASCII DMX files",default=False)
 	game_path : StringProperty(name=get_id("game_path"),description=get_id("game_path_tip"),subtype="DIR_PATH",update=game_path_changed)
 	dmx_weightlink_threshold : FloatProperty(name=get_id("dmx_weightlinkcull"),description=get_id("dmx_weightlinkcull_tip"),max=1,min=0)
-	smd_format : EnumProperty(name="Target Engine", items=(('SOURCE', "Source", "Source Engine (Half-Life 2)") , ("GOLDSOURCE", "GoldSrc", "GoldSrc engine (Half-Life 1)")), default="SOURCE")
+	#smd_format : EnumProperty(name="Target Engine", items=(('SOURCE', "Source", "Source Engine (Half-Life 2)") , ("GOLDSOURCE", "GoldSrc", "GoldSrc engine (Half-Life 1)")), default="SOURCE")
+	smd_format : EnumProperty(name=get_id("smd_format"), items=(('SOURCE', "Source", "Source Engine (Half-Life 2)") , ("GOLDSOURCE", "GoldSrc", "GoldSrc engine (Half-Life 1)")), default="SOURCE")
 
 class ValveSource_VertexAnimation(PropertyGroup):
 	name : StringProperty(name="Name",default="VertexAnim")
