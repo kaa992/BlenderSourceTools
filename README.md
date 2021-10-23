@@ -1,5 +1,6 @@
 # BlenderSourceTools
 Modified version of the Blender Source Tools with some Source 2 specific features.
+
 Latest realease added support for blender 2.93.
 
 Original version: https://github.com/Artfunkel/BlenderSourceTools
