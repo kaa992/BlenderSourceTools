@@ -1,7 +1,7 @@
 # BlenderSourceTools
 Modified version of the Blender Source Tools with some Source 2 specific features.
 
-Latest realease added support for blender 2.93.
+Updated this addon for Blender 3.x
 
 Original version: https://github.com/Artfunkel/BlenderSourceTools
 
