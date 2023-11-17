@@ -1,8 +1,8 @@
 # BlenderSourceTools
 Modified version of the Blender Source Tools with some Source 2 specific features.
 
-Updated this addon for Blender 3.x
-
+~~Updated this addon for Blender 3.x~~
+## UPDATED TO WORK WITH BLENDER 4.0!!
 Original version: https://github.com/Artfunkel/BlenderSourceTools
 
 __Warning: This version is experimental and untested. It may corrupt your .blend files or have other nasty side effects. Please back up your files before using.__
