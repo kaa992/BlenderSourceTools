@@ -27,7 +27,7 @@ bl_info = {
 	"location": "File > Import/Export, Scene properties",
 	"wiki_url": "http://steamcommunity.com/groups/BlenderSourceTools",
 	"tracker_url": "http://steamcommunity.com/groups/BlenderSourceTools/discussions/0/",
-	"description": "Importer and exporter for Valve Software's Source Engine. Supports SMD\VTA, DMX and QC."
+	"description": "Updated to Blender 3.6!"
 }
 
 import bpy, os

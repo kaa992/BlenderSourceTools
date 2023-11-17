@@ -588,15 +588,6 @@ class SMD_PT_Object_Config(bpy.types.Panel):
 							remap.prop(group, "min")
 							remap.prop(group, "max")
 							break
-
-					if not found:
-						group = context.active_object.vs.vertex_map_remaps.add()
-						group.group = map_name
-						group.min = 0.0
-						group.max = 1.0
-						remap.prop(group, "min")
-						remap.prop(group, "max")
-
 				col.separator()
 				col.operator("wm.url_open", text=get_id("help",True), icon='HELP').url = "http://developer.valvesoftware.com/wiki/DMX/Source_2_Vertex_attributes"
 
