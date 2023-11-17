@@ -2070,7 +2070,7 @@ skeleton
 						if bpy.context.scene.vs.bone_swap_forward_axis:
 							pMat = pMat @ Matrix.Rotation(radians(90.0), 4, 'Z')
 
-						relMat = pMat.inverted() @ bone.matrix
+						relMat = pMat.inverted_safe() @ bone.matrix
 					else:
 						relMat = self.armature.matrix_world @ bone.matrix
 
