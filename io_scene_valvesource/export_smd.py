@@ -1563,7 +1563,9 @@ skeleton
 			pos = [None] * num_verts
 			norms = [None] * num_loops
 			texco = ordered_set.OrderedSet()
+			texco1 = ordered_set.OrderedSet()
 			texcoIndices = [None] * num_loops
+			texcoIndices1 = [None] * num_loops
 			jointWeights = []
 			jointIndices = []
 			balance = [0.0] * num_verts
@@ -1577,7 +1579,7 @@ skeleton
 
 			ob.data.calc_normals_split()
 
-			uv_layer = ob.data.uv_layers.active.data
+			uv_layer = ob.data.uv_layers
 
 			bench.report("object setup")
 
@@ -1633,7 +1635,8 @@ skeleton
 			ob.data.calc_normals_split()
 
 			for loop in [ob.data.loops[i] for poly in ob.data.polygons for i in poly.loop_indices]:
-				texcoIndices[loop.index] = texco.add(datamodel.Vector2(uv_layer[loop.index].uv))
+				texcoIndices[loop.index] = texco.add(datamodel.Vector2(uv_layer[0].data[loop.index].uv))
+				texcoIndices1[loop.index] = texco1.add(datamodel.Vector2(uv_layer[1].data[loop.index].uv))
 				norms[loop.index] = datamodel.Vector3(loop.normal)
 				Indices[loop.index] = loop.vertex_index
 
@@ -1644,6 +1647,9 @@ skeleton
 
 			vertex_data[keywords['texco']] = datamodel.make_array(texco,datamodel.Vector2)
 			vertex_data[keywords['texco'] + "Indices"] = datamodel.make_array(texcoIndices,int)
+
+			vertex_data[keywords['texco1']] = datamodel.make_array(texco1,datamodel.Vector2)
+			vertex_data[keywords['texco1'] + "Indices"] = datamodel.make_array(texcoIndices1,int)
 
 			if have_weightmap:
 				vertex_data[keywords["weight"]] = datamodel.make_array(jointWeights,float)
