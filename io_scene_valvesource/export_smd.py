@@ -460,7 +460,10 @@ class SmdExporter(bpy.types.Operator, Logger):
 				for part in parts:
 					ob = part.object.copy()
 					ob.data = ob.data.copy()
-					ob.data.uv_layers.active.name = "__dmx_uv__"
+					i = 0
+					for uvs in ob.data.uv_layers:
+						uvs.name = "__dmx_uv__" + i
+						i +=1
 					scene_obs.link(ob)
 					ob.select_set(True)
 					view_obs.active = ob
@@ -1083,64 +1086,64 @@ class SmdExporter(bpy.types.Operator, Logger):
 
 				data.calc_normals_split()
 
-				uv_loop = data.uv_layers.active.data
-				uv_tex = data.uv_layers.active.data
+				for uv_loop in ob.data.uv_layers:
+					uv_tex = data.uv_layers.active.data
 
-				weights = self.getWeightmap(bake)
+					weights = self.getWeightmap(bake)
 
-				ob_weight_str = None
-				if type(bake.envelope) == str and bake.envelope in self.bone_ids:
-					ob_weight_str = (" 1 {} 1" if not goldsrc else "{}").format(self.bone_ids[bake.envelope])
-				elif not weights:
-					ob_weight_str = " 0" if not goldsrc else "0"
+					ob_weight_str = None
+					if type(bake.envelope) == str and bake.envelope in self.bone_ids:
+						ob_weight_str = (" 1 {} 1" if not goldsrc else "{}").format(self.bone_ids[bake.envelope])
+					elif not weights:
+						ob_weight_str = " 0" if not goldsrc else "0"
 
-				bad_face_mats = 0
-				multi_weight_verts = set() # only relevant for GoldSrc exports
-				p = 0
-				for poly in data.polygons:
-					if p % 10 == 0: bpy.context.window_manager.progress_update(p / len(data.polygons))
-					mat_name, mat_success = self.GetMaterialName(ob, poly)
-					if not mat_success:
-						bad_face_mats += 1
+					bad_face_mats = 0
+					multi_weight_verts = set() # only relevant for GoldSrc exports
+					p = 0
+					for poly in data.polygons:
+						if p % 10 == 0: bpy.context.window_manager.progress_update(p / len(data.polygons))
+						mat_name, mat_success = self.GetMaterialName(ob, poly)
+						if not mat_success:
+							bad_face_mats += 1
 
-					self.smd_file.write(mat_name + "\n")
+						self.smd_file.write(mat_name + "\n")
 
-					for loop in [data.loops[l] for l in poly.loop_indices]:
-						# Vertex locations, normal directions
-						v = data.vertices[loop.vertex_index]
-						pos_norm = "  {}  {}  ".format(getSmdVec(v.co),getSmdVec(loop.normal))
+						for loop in [data.loops[l] for l in poly.loop_indices]:
+							# Vertex locations, normal directions
+							v = data.vertices[loop.vertex_index]
+							pos_norm = "  {}  {}  ".format(getSmdVec(v.co),getSmdVec(loop.normal))
 
-						# UVs
-						uv = " ".join([getSmdFloat(j) for j in uv_loop[loop.index].uv])
+							# UVs
+							uv = " ".join([getSmdFloat(j) for j in uv_loop[loop.index].uv])
 
-						if not goldsrc:
-							# Weightmaps
-							weight_string = ""
-							if ob_weight_str:
-								weight_string = ob_weight_str
-							else:
-								valid_weights = 0
-								for link in [link for link in weights[v.index] if link[1] > 0]:
-									weight_string += " {} {}".format(link[0], getSmdFloat(link[1]))
-									valid_weights += 1
-								weight_string = " {}{}".format(valid_weights,weight_string)
-
-							self.smd_file.write("0" + pos_norm + uv + weight_string + "\n") # write to file
-
-						else:
-							if ob_weight_str:
-								weight_string = ob_weight_str
-							else:
-								goldsrc_weights = [link for link in weights[v.index] if link[1] > 0]
-								if len(goldsrc_weights) == 0:
-									weight_string = "0"
+							if not goldsrc:
+								# Weightmaps
+								weight_string = ""
+								if ob_weight_str:
+									weight_string = ob_weight_str
 								else:
-									if len(goldsrc_weights) > 1:
-										multi_weight_verts.add(v)
-									weight_string = str(goldsrc_weights[0][0])
-							self.smd_file.write(weight_string + pos_norm + uv + "\n") # write to file
+									valid_weights = 0
+									for link in [link for link in weights[v.index] if link[1] > 0]:
+										weight_string += " {} {}".format(link[0], getSmdFloat(link[1]))
+										valid_weights += 1
+									weight_string = " {}{}".format(valid_weights,weight_string)
 
-					face_index += 1
+								self.smd_file.write("0" + pos_norm + uv + weight_string + "\n") # write to file
+
+							else:
+								if ob_weight_str:
+									weight_string = ob_weight_str
+								else:
+									goldsrc_weights = [link for link in weights[v.index] if link[1] > 0]
+									if len(goldsrc_weights) == 0:
+										weight_string = "0"
+									else:
+										if len(goldsrc_weights) > 1:
+											multi_weight_verts.add(v)
+										weight_string = str(goldsrc_weights[0][0])
+								self.smd_file.write(weight_string + pos_norm + uv + "\n") # write to file
+
+						face_index += 1
 
 				if goldsrc and multi_weight_verts:
 					self.warning(get_id("exporterr_goldsrc_multiweights", format_string=True).format(len(multi_weight_verts), bake.src.data.name))
@@ -1546,7 +1549,7 @@ skeleton
 			if culled_weight_links:
 				self.warning(get_id("exporter_warn_weightlinks_culled",True).format(culled_weight_links,cull_threshold,bake.src.name))
 
-			format = vertex_data["vertexFormat"] = datamodel.make_array( [ keywords['pos'], keywords['norm'], keywords['texco'] ], str)
+			format = vertex_data["vertexFormat"] = datamodel.make_array( [ keywords['pos'], keywords['norm'], keywords['texco'], keywords['texco1']],str)
 			if have_weightmap: format.extend( [ keywords['weight'], keywords["weight_indices"] ] )
 			if bake.shapes and bake.balance_vg:
 				format.append(keywords["balance"])
@@ -1563,7 +1566,9 @@ skeleton
 			pos = [None] * num_verts
 			norms = [None] * num_loops
 			texco = ordered_set.OrderedSet()
+			texco1 = ordered_set.OrderedSet()
 			texcoIndices = [None] * num_loops
+			texcoIndices1 = [None] * num_loops
 			jointWeights = []
 			jointIndices = []
 			balance = [0.0] * num_verts
@@ -1577,7 +1582,7 @@ skeleton
 
 			ob.data.calc_normals_split()
 
-			uv_layer = ob.data.uv_layers.active.data
+			uv_layer = ob.data.uv_layers
 
 			bench.report("object setup")
 
@@ -1633,7 +1638,8 @@ skeleton
 			ob.data.calc_normals_split()
 
 			for loop in [ob.data.loops[i] for poly in ob.data.polygons for i in poly.loop_indices]:
-				texcoIndices[loop.index] = texco.add(datamodel.Vector2(uv_layer[loop.index].uv))
+				texcoIndices[loop.index] = texco.add(datamodel.Vector2(uv_layer[0].data[loop.index].uv))
+				texcoIndices1[loop.index] = texco1.add(datamodel.Vector2(uv_layer[1].data[loop.index].uv))
 				norms[loop.index] = datamodel.Vector3(loop.normal)
 				Indices[loop.index] = loop.vertex_index
 
@@ -1644,7 +1650,9 @@ skeleton
 
 			vertex_data[keywords['texco']] = datamodel.make_array(texco,datamodel.Vector2)
 			vertex_data[keywords['texco'] + "Indices"] = datamodel.make_array(texcoIndices,int)
-
+			
+			vertex_data[keywords['texco1']] = datamodel.make_array(texco1,datamodel.Vector2)
+			vertex_data[keywords['texco1'] + "Indices"] = datamodel.make_array(texcoIndices1,int)
 			if have_weightmap:
 				vertex_data[keywords["weight"]] = datamodel.make_array(jointWeights,float)
 				vertex_data[keywords["weight_indices"]] = datamodel.make_array(jointIndices,int)

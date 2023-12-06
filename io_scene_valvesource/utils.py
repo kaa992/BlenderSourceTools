@@ -250,7 +250,7 @@ def findDmxClothVertexGroups(ob):
 def getDmxKeywords(format_version):
 	if format_version >= 22:
 		return {
-		  'pos': "position$0", 'norm': "normal$0", 'texco':"texcoord$0", 'wrinkle':"wrinkle$0",
+		  'pos': "position$0", 'norm': "normal$0", 'texco':"texcoord$0",'texco1':"texcoord$1", 'wrinkle':"wrinkle$0",
 		  'balance':"balance$0", 'weight':"blendweights$0", 'weight_indices':"blendindices$0",
 		  'valvesource_vertex_blend':"VertexPaintBlendParams$0",
 		  'valvesource_vertex_blend1':"VertexPaintBlendParams1$0",
